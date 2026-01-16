@@ -107,6 +107,17 @@ export class AnalysisService {
     // Extract file extension from audioUrl
     const ext = recording.audioUrl.split('.').pop() || 'webm';
     const filename = `${recording.gender}.${ext}`;
+    
+    // Log file info
+    const fileSizeMB = audioBuffer.length / (1024 * 1024);
+    console.log(`[Analysis] Processing ${recording.gender}: ${filename}, size: ${fileSizeMB.toFixed(2)}MB`);
+    
+    // Check file size limit (Whisper API max 25MB)
+    if (audioBuffer.length > 25 * 1024 * 1024) {
+      throw new BadRequestException(
+        `Файл слишком большой (${fileSizeMB.toFixed(1)}MB). Максимум 25MB. Попробуйте сжать аудио или использовать более короткую запись.`
+      );
+    }
 
     // Transcribe with Whisper
     const transcription = await this.whisperService.transcribe(

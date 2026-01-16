@@ -23,19 +23,27 @@ export class RecordingsController {
         fileSize: 25 * 1024 * 1024, // 25MB
       },
       fileFilter: (req, file, cb) => {
+        // Whisper supported formats: mp3, mp4, mpeg, mpga, m4a, wav, webm
         const allowedMimes = [
           'audio/mpeg',
           'audio/mp3',
           'audio/mp4',
           'audio/m4a',
+          'audio/x-m4a',
           'audio/wav',
+          'audio/x-wav',
           'audio/webm',
           'audio/ogg',
+          'audio/flac',
+          'audio/x-flac',
+          'video/webm', // Browser may send webm as video
         ];
+        console.log(`[Upload] File: ${file.originalname}, MIME: ${file.mimetype}, Size: ${(file.size / 1024 / 1024).toFixed(2)}MB`);
         if (allowedMimes.includes(file.mimetype)) {
           cb(null, true);
         } else {
-          cb(new BadRequestException('Invalid audio format'), false);
+          console.warn(`[Upload] Rejected MIME type: ${file.mimetype}`);
+          cb(new BadRequestException(`Неподдерживаемый формат аудио: ${file.mimetype}`), false);
         }
       },
     }),
