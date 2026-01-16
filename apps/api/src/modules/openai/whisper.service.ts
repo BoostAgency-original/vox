@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { OpenaiService } from './openai.service';
-import { toFile } from 'openai';
 import type { WordTimestamp } from '@vox/shared';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as os from 'os';
+import { v4 as uuid } from 'uuid';
 
 export interface TranscriptionResult {
   text: string;
@@ -16,47 +19,51 @@ export class WhisperService {
   async transcribe(audioBuffer: Buffer, filename: string): Promise<TranscriptionResult> {
     const client = this.openaiService.getClient();
 
-    console.log(`[Whisper] Transcribing: ${filename}, buffer size: ${(audioBuffer.length / 1024 / 1024).toFixed(2)}MB`);
+    const sizeMB = (audioBuffer.length / 1024 / 1024).toFixed(2);
+    console.log(`[Whisper] Transcribing: ${filename}, size: ${sizeMB}MB`);
 
-    // Use OpenAI SDK's toFile helper with explicit content type
-    const ext = filename.split('.').pop()?.toLowerCase() || 'webm';
-    const contentType = {
-      mp3: 'audio/mpeg',
-      mp4: 'audio/mp4',
-      m4a: 'audio/mp4',
-      wav: 'audio/wav',
-      webm: 'audio/webm',
-      ogg: 'audio/ogg',
-      flac: 'audio/flac',
-    }[ext] || 'audio/mpeg';
+    // Write buffer to temp file and use fs.createReadStream
+    // This is more reliable for OpenAI SDK
+    const tempDir = os.tmpdir();
+    const tempFile = path.join(tempDir, `whisper-${uuid()}-${filename}`);
+    
+    try {
+      fs.writeFileSync(tempFile, audioBuffer);
+      console.log(`[Whisper] Temp file created: ${tempFile}`);
 
-    const file = await toFile(audioBuffer, filename, { type: contentType });
+      const response = await client.audio.transcriptions.create({
+        file: fs.createReadStream(tempFile),
+        model: 'whisper-1',
+        response_format: 'verbose_json',
+        timestamp_granularities: ['word'],
+        language: 'ru',
+      });
 
-    const response = await client.audio.transcriptions.create({
-      file,
-      model: 'whisper-1',
-      response_format: 'verbose_json',
-      timestamp_granularities: ['word'],
-      language: 'ru',
-    });
+      // Extract words with timestamps
+      const words: WordTimestamp[] = (response as any).words?.map((w: any) => ({
+        word: w.word,
+        start: w.start,
+        end: w.end,
+      })) || [];
 
-    // Extract words with timestamps
-    const words: WordTimestamp[] = (response as any).words?.map((w: any) => ({
-      word: w.word,
-      start: w.start,
-      end: w.end,
-    })) || [];
+      // Calculate total duration
+      const duration = words.length > 0 
+        ? words[words.length - 1].end 
+        : (response as any).duration || 0;
 
-    // Calculate total duration
-    const duration = words.length > 0 
-      ? words[words.length - 1].end 
-      : (response as any).duration || 0;
+      console.log(`[Whisper] Transcription complete: ${words.length} words, ${duration.toFixed(1)}s`);
 
-    return {
-      text: response.text,
-      words,
-      duration,
-    };
+      return {
+        text: response.text,
+        words,
+        duration,
+      };
+    } finally {
+      // Clean up temp file
+      if (fs.existsSync(tempFile)) {
+        fs.unlinkSync(tempFile);
+        console.log(`[Whisper] Temp file deleted: ${tempFile}`);
+      }
+    }
   }
 }
-
