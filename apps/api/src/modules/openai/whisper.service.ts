@@ -34,7 +34,9 @@ export class WhisperService {
     console.log(`[Whisper] Transcribing: ${filename}, buffer size: ${(audioBuffer.length / 1024 / 1024).toFixed(2)}MB`);
 
     // Create a File-like object that OpenAI SDK can handle
-    const file = new File([audioBuffer], filename, { type: getMimeType(filename) });
+    // Convert Buffer to Uint8Array for File constructor
+    const uint8Array = new Uint8Array(audioBuffer.buffer, audioBuffer.byteOffset, audioBuffer.length);
+    const file = new File([uint8Array], filename, { type: getMimeType(filename) });
 
     const response = await client.audio.transcriptions.create({
       file,
