@@ -13,7 +13,7 @@ import { Interpretation } from './entities/interpretation.entity';
         type: 'postgres',
         url: configService.get('DATABASE_URL'),
         entities: [Session, Recording, Interpretation],
-        synchronize: configService.get('NODE_ENV') !== 'production',
+        synchronize: true, // Auto-create tables
         logging: configService.get('NODE_ENV') !== 'production',
       }),
     }),
