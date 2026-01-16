@@ -104,10 +104,14 @@ export class AnalysisService {
     // Get audio buffer from storage
     const audioBuffer = await this.storageService.getAudioBuffer(recording.audioUrl);
 
+    // Extract file extension from audioUrl
+    const ext = recording.audioUrl.split('.').pop() || 'webm';
+    const filename = `${recording.gender}.${ext}`;
+
     // Transcribe with Whisper
     const transcription = await this.whisperService.transcribe(
       audioBuffer,
-      `${recording.gender}.webm`,
+      filename,
     );
 
     // Analyze lexicon with GPT
