@@ -1,27 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { OpenaiService } from './openai.service';
+import { toFile } from 'openai';
 import type { WordTimestamp } from '@vox/shared';
-import { Readable } from 'stream';
 
 export interface TranscriptionResult {
   text: string;
   words: WordTimestamp[];
   duration: number;
-}
-
-// Helper to get MIME type from extension
-function getMimeType(filename: string): string {
-  const ext = filename.split('.').pop()?.toLowerCase() || 'webm';
-  const mimeTypes: Record<string, string> = {
-    mp3: 'audio/mpeg',
-    mp4: 'audio/mp4',
-    m4a: 'audio/mp4',
-    wav: 'audio/wav',
-    webm: 'audio/webm',
-    ogg: 'audio/ogg',
-    flac: 'audio/flac',
-  };
-  return mimeTypes[ext] || 'audio/mpeg';
 }
 
 @Injectable()
@@ -33,10 +18,19 @@ export class WhisperService {
 
     console.log(`[Whisper] Transcribing: ${filename}, buffer size: ${(audioBuffer.length / 1024 / 1024).toFixed(2)}MB`);
 
-    // Create a File-like object that OpenAI SDK can handle
-    // Convert Buffer to Uint8Array for File constructor
-    const uint8Array = new Uint8Array(audioBuffer.buffer, audioBuffer.byteOffset, audioBuffer.length);
-    const file = new File([uint8Array], filename, { type: getMimeType(filename) });
+    // Use OpenAI SDK's toFile helper with explicit content type
+    const ext = filename.split('.').pop()?.toLowerCase() || 'webm';
+    const contentType = {
+      mp3: 'audio/mpeg',
+      mp4: 'audio/mp4',
+      m4a: 'audio/mp4',
+      wav: 'audio/wav',
+      webm: 'audio/webm',
+      ogg: 'audio/ogg',
+      flac: 'audio/flac',
+    }[ext] || 'audio/mpeg';
+
+    const file = await toFile(audioBuffer, filename, { type: contentType });
 
     const response = await client.audio.transcriptions.create({
       file,
