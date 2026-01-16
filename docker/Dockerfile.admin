@@ -1,39 +1,22 @@
-FROM node:20-alpine AS base
+FROM node:20-alpine
 WORKDIR /app
 
-# Install dependencies
-FROM base AS deps
 RUN npm install -g bun
+
 COPY package.json bun.lock ./
 COPY apps/admin/package.json ./apps/admin/
-COPY packages/shared/package.json ./packages/shared/
-COPY packages/shared/src ./packages/shared/src
+COPY packages/shared ./packages/shared
+
 RUN bun install
 
-# Build
-FROM base AS builder
-COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/apps/admin/node_modules ./apps/admin/node_modules
-COPY --from=deps /app/packages/shared ./packages/shared
 COPY apps/admin ./apps/admin
 
 ARG NEXT_PUBLIC_API_URL
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ENV NODE_ENV=production
 
 WORKDIR /app/apps/admin
 RUN npm run build
-
-# Production
-FROM node:20-alpine AS runner
-ENV NODE_ENV=production
-WORKDIR /app/apps/admin
-
-COPY --from=builder /app/node_modules /app/node_modules
-COPY --from=builder /app/apps/admin/node_modules ./node_modules
-COPY --from=builder /app/apps/admin/.next ./.next
-COPY --from=builder /app/apps/admin/public ./public
-COPY --from=builder /app/apps/admin/package.json ./package.json
-COPY --from=builder /app/packages/shared /app/packages/shared
 
 EXPOSE 3002
 ENV PORT=3002
