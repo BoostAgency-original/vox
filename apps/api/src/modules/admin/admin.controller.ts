@@ -24,11 +24,12 @@ export class AdminController {
   async login(@Body() dto: LoginDto, @Res({ passthrough: true }) res: Response) {
     const result = await this.adminService.login(dto.password);
 
-    // Set cookie
+    // Set cookie - for cross-origin admin panel
+    const isAdminHttps = process.env.ADMIN_URL?.startsWith('https://');
     res.cookie('admin_token', result.token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      secure: isAdminHttps,
+      sameSite: isAdminHttps ? 'none' : 'lax',
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
     });
 
