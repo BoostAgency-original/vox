@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { api } from '@/lib/api';
@@ -11,10 +12,22 @@ export default function DashboardLayout({
 }) {
   const router = useRouter();
 
+  useEffect(() => {
+    // Check auth on mount
+    if (!api.isAuthenticated()) {
+      router.replace('/');
+    }
+  }, [router]);
+
   const handleLogout = async () => {
     await api.logout();
-    router.push('/');
+    router.replace('/');
   };
+
+  // Don't render if not authenticated
+  if (typeof window !== 'undefined' && !api.isAuthenticated()) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen">
@@ -44,4 +57,3 @@ export default function DashboardLayout({
     </div>
   );
 }
-

@@ -6,6 +6,7 @@ import type {
 } from '@vox/shared';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+const TOKEN_KEY = 'admin_token';
 
 class AdminApiClient {
   private baseUrl: string;
@@ -14,22 +15,52 @@ class AdminApiClient {
     this.baseUrl = baseUrl;
   }
 
+  private getToken(): string | null {
+    if (typeof window === 'undefined') return null;
+    return localStorage.getItem(TOKEN_KEY);
+  }
+
+  private setToken(token: string): void {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(TOKEN_KEY, token);
+    }
+  }
+
+  private removeToken(): void {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem(TOKEN_KEY);
+    }
+  }
+
+  isAuthenticated(): boolean {
+    return !!this.getToken();
+  }
+
   private async request<T>(
     endpoint: string,
     options?: RequestInit,
   ): Promise<T> {
     const url = `${this.baseUrl}/api${endpoint}`;
+    const token = this.getToken();
     
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      ...options?.headers as Record<string, string>,
+    };
+
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
     const response = await fetch(url, {
       ...options,
-      headers: {
-        'Content-Type': 'application/json',
-        ...options?.headers,
-      },
-      credentials: 'include',
+      headers,
     });
 
     if (!response.ok) {
+      if (response.status === 401) {
+        this.removeToken();
+      }
       const error = await response.json().catch(() => ({}));
       throw new Error(error.message || `HTTP ${response.status}`);
     }
@@ -38,16 +69,20 @@ class AdminApiClient {
   }
 
   async login(password: string): Promise<{ token: string; expiresAt: string }> {
-    return this.request('/admin/login', {
+    const result = await this.request<{ token: string; expiresAt: string }>('/admin/login', {
       method: 'POST',
       body: JSON.stringify({ password }),
     });
+    this.setToken(result.token);
+    return result;
   }
 
   async logout(): Promise<void> {
-    return this.request('/admin/logout', {
-      method: 'POST',
-    });
+    try {
+      await this.request('/admin/logout', { method: 'POST' });
+    } finally {
+      this.removeToken();
+    }
   }
 
   async getStats(): Promise<AdminStats> {
@@ -75,9 +110,9 @@ class AdminApiClient {
   }
 
   getExportUrl(type: 'contacts' | 'full'): string {
-    return `${this.baseUrl}/api/admin/export?type=${type}`;
+    const token = this.getToken();
+    return `${this.baseUrl}/api/admin/export?type=${type}&token=${token}`;
   }
 }
 
 export const api = new AdminApiClient(API_URL);
-

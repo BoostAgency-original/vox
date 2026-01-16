@@ -32,7 +32,13 @@ export class AdminGuard implements CanActivate {
       return authHeader.slice(7);
     }
 
-    // Check cookie
+    // Check query param (for file downloads)
+    const queryToken = request.query?.token as string;
+    if (queryToken) {
+      return queryToken;
+    }
+
+    // Check cookie (legacy)
     const cookieToken = request.cookies?.admin_token;
     if (cookieToken) {
       return cookieToken;

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
 
@@ -10,6 +10,13 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
+  useEffect(() => {
+    // Redirect if already logged in
+    if (api.isAuthenticated()) {
+      router.replace('/dashboard');
+    }
+  }, [router]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -17,8 +24,7 @@ export default function LoginPage() {
 
     try {
       await api.login(password);
-      router.push('/dashboard');
-      router.refresh();
+      router.replace('/dashboard');
     } catch (err) {
       console.error('Login error:', err);
       setError('Неверный пароль');
@@ -74,4 +80,3 @@ export default function LoginPage() {
     </main>
   );
 }
-
