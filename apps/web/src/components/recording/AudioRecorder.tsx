@@ -66,7 +66,7 @@ export function AudioRecorder({ gender, isRecorded, onRecordingComplete }: Audio
       }, 1000);
     } catch (err) {
       console.error('Failed to start recording:', err);
-      alert('Не удалось получить доступ к микрофону');
+      alert('Failed to access microphone');
     }
   };
 
@@ -87,13 +87,13 @@ export function AudioRecorder({ gender, isRecorded, onRecordingComplete }: Audio
 
     // Check file type
     if (!file.type.startsWith('audio/')) {
-      alert('Пожалуйста, выберите аудио файл');
+      alert('Please select an audio file');
       return;
     }
 
     // Check file size (25MB max)
     if (file.size > 25 * 1024 * 1024) {
-      alert('Файл слишком большой. Максимум 25MB');
+      alert('File is too large. Maximum 25MB');
       return;
     }
 
@@ -148,7 +148,7 @@ export function AudioRecorder({ gender, isRecorded, onRecordingComplete }: Audio
           </svg>
         </div>
         <p className={cn('font-medium', isFemale ? 'text-female-400' : 'text-male-400')}>
-          Запись загружена ✓
+          Recording uploaded ✓
         </p>
       </motion.div>
     );
@@ -159,12 +159,12 @@ export function AudioRecorder({ gender, isRecorded, onRecordingComplete }: Audio
       <div className="space-y-6">
         <div className="space-y-3">
           <p className="text-gray-400 text-sm text-center">
-            {isFromFile ? 'Прослушайте файл перед отправкой' : 'Прослушайте запись перед отправкой'}
+            {isFromFile ? 'Listen to the file before submitting' : 'Listen to the recording before submitting'}
           </p>
           <AudioPlayer src={audioUrl} variant={gender} />
           {!isFromFile && recordingTime > 0 && (
             <p className="text-center text-gray-500 text-sm">
-              Длительность: {formatTime(recordingTime)}
+              Duration: {formatTime(recordingTime)}
             </p>
           )}
         </div>
@@ -174,7 +174,7 @@ export function AudioRecorder({ gender, isRecorded, onRecordingComplete }: Audio
             onClick={handleReset}
             className="flex-1 py-3 border border-white/20 text-white rounded-xl hover:bg-white/5 transition-colors"
           >
-            {isFromFile ? 'Выбрать другой' : 'Перезаписать'}
+            {isFromFile ? 'Choose another' : 'Re-record'}
           </button>
           <button
             onClick={handleSubmit}
@@ -184,7 +184,7 @@ export function AudioRecorder({ gender, isRecorded, onRecordingComplete }: Audio
               isFemale ? 'bg-female-500 hover:bg-female-600' : 'bg-male-500 hover:bg-male-600'
             )}
           >
-            {isUploading ? 'Загрузка...' : 'Отправить'}
+            {isUploading ? 'Uploading...' : 'Submit'}
           </button>
         </div>
       </div>
@@ -229,12 +229,12 @@ export function AudioRecorder({ gender, isRecorded, onRecordingComplete }: Audio
         'mt-6 text-lg font-medium',
         isRecording ? 'text-red-400' : 'text-gray-400'
       )}>
-        {isRecording ? formatTime(recordingTime) : 'Нажмите для записи'}
+        {isRecording ? formatTime(recordingTime) : 'Tap to record'}
       </p>
 
       {isRecording && (
         <p className="text-gray-500 text-sm mt-2">
-          Рекомендуемая длительность: 1-3 минуты
+          Recommended duration: 1-3 minutes
         </p>
       )}
 
@@ -254,16 +254,16 @@ export function AudioRecorder({ gender, isRecorded, onRecordingComplete }: Audio
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
               </svg>
-              Загрузить MP3
+              Upload MP3
             </span>
           </button>
 
           <div className="mt-8 text-left glass rounded-xl p-4">
-            <p className="text-gray-400 text-sm mb-2">💡 О чём говорить:</p>
+            <p className="text-gray-400 text-sm mb-2">💡 What to talk about:</p>
             <ul className="text-gray-500 text-sm space-y-1">
-              <li>• Кто вы и чем занимаетесь</li>
-              <li>• Что важно в вашей жизни</li>
-              <li>• Как проводите свободное время</li>
+              <li>• Who you are and what you do</li>
+              <li>• What matters in your life</li>
+              <li>• How you spend your free time</li>
             </ul>
           </div>
         </>

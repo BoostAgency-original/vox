@@ -22,7 +22,7 @@ export default function HomePage() {
       const session = await api.createSession({ email, femaleName, maleName });
       router.push(`/analyze/${session.id}`);
     } catch (err) {
-      setError('Не удалось создать сессию. Попробуйте ещё раз.');
+      setError('Failed to create session. Please try again.');
       setIsLoading(false);
     }
   };
@@ -45,14 +45,14 @@ export default function HomePage() {
                 <span className="text-gradient-male">x</span>
               </h1>
               <p className="mt-2 text-gray-400 text-lg">
-                Голосовая совместимость
+                Voice Compatibility
               </p>
             </div>
 
             {/* Description */}
             <p className="text-xl text-gray-300 mb-12 max-w-lg mx-auto">
-              Узнайте, насколько совпадают ваши стили общения. 
-              Загрузите голосовые записи и получите детальный анализ совместимости.
+              Discover how well your communication styles match.
+              Upload voice recordings and get a detailed compatibility analysis.
             </p>
 
             {/* Form */}
@@ -66,7 +66,7 @@ export default function HomePage() {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm text-gray-400 mb-2 text-left">
-                    Email для получения результатов
+                    Email to receive results
                   </label>
                   <input
                     type="email"
@@ -81,26 +81,26 @@ export default function HomePage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm text-female-400 mb-2 text-left">
-                      Её имя
+                      Her name
                     </label>
                     <input
                       type="text"
                       value={femaleName}
                       onChange={(e) => setFemaleName(e.target.value)}
-                      placeholder="Анна"
+                      placeholder="Anna"
                       required
                       className="w-full px-4 py-3 bg-female-500/10 border border-female-500/20 rounded-xl text-white placeholder-female-300/50 focus:outline-none focus:border-female-500/50 transition-colors"
                     />
                   </div>
                   <div>
                     <label className="block text-sm text-male-400 mb-2 text-left">
-                      Его имя
+                      His name
                     </label>
                     <input
                       type="text"
                       value={maleName}
                       onChange={(e) => setMaleName(e.target.value)}
-                      placeholder="Иван"
+                      placeholder="John"
                       required
                       className="w-full px-4 py-3 bg-male-500/10 border border-male-500/20 rounded-xl text-white placeholder-male-300/50 focus:outline-none focus:border-male-500/50 transition-colors"
                     />
@@ -116,7 +116,7 @@ export default function HomePage() {
                   disabled={isLoading}
                   className="w-full py-4 bg-gradient-to-r from-female-500 to-male-500 text-white font-semibold rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {isLoading ? 'Создание...' : 'Начать анализ'}
+                  {isLoading ? 'Creating...' : 'Start Analysis'}
                 </button>
               </div>
             </motion.form>
@@ -128,25 +128,25 @@ export default function HomePage() {
       <section className="py-16 px-4 border-t border-white/5">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-2xl font-bold text-center mb-12 text-gray-200">
-            Как это работает
+            How It Works
           </h2>
           
           <div className="grid md:grid-cols-3 gap-8">
             {[
               {
                 step: '01',
-                title: 'Запишите голос',
-                description: 'Каждый записывает 1-3 минуты спонтанной речи о себе',
+                title: 'Record Your Voice',
+                description: 'Each person records 1-3 minutes of spontaneous speech about themselves',
               },
               {
                 step: '02',
-                title: 'Анализ',
-                description: 'ИИ анализирует 8 параметров речи: темп, паузы, лексику',
+                title: 'Analysis',
+                description: 'AI analyzes 8 speech parameters: pace, pauses, vocabulary',
               },
               {
                 step: '03',
-                title: 'Результат',
-                description: 'Получите детальный отчёт о совместимости на email',
+                title: 'Results',
+                description: 'Receive a detailed compatibility report via email',
               },
             ].map((item, i) => (
               <motion.div

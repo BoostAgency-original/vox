@@ -32,8 +32,8 @@
     "cookie-parser": "^1.4.7",
     "openai": "^4.77.0",
     "pg": "^8.13.1",
+    "nodemailer": "^6.9.16",
     "reflect-metadata": "^0.2.2",
-    "resend": "^4.0.1",
     "rxjs": "^7.8.1",
     "typeorm": "^0.3.20",
     "uuid": "^11.0.3"
@@ -46,6 +46,7 @@
     "@types/express": "^5.0.0",
     "@types/multer": "^1.4.12",
     "@types/node": "^22.10.2",
+    "@types/nodemailer": "^6.4.17",
     "@types/uuid": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "^8.18.1",
     "@typescript-eslint/parser": "^8.18.1",

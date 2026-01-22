@@ -11,17 +11,17 @@ interface CompatibilityScoreProps {
 }
 
 function getComfortLabel(score: number): string {
-  if (score >= 80) return 'Очень высокий';
-  if (score >= 60) return 'Высокий';
-  if (score >= 40) return 'Средний';
-  return 'Низкий';
+  if (score >= 80) return 'Very high';
+  if (score >= 60) return 'High';
+  if (score >= 40) return 'Moderate';
+  return 'Low';
 }
 
 function getInterestLabel(score: number): string {
-  if (score >= 80) return 'Сильный';
-  if (score >= 60) return 'Выше среднего';
-  if (score >= 40) return 'Умеренный';
-  return 'Низкий';
+  if (score >= 80) return 'Strong';
+  if (score >= 60) return 'Above average';
+  if (score >= 40) return 'Moderate';
+  return 'Low';
 }
 
 export function CompatibilityScore({ title, comfort, interest, gender }: CompatibilityScoreProps) {
@@ -49,7 +49,7 @@ export function CompatibilityScore({ title, comfort, interest, gender }: Compati
         {/* Comfort */}
         <div>
           <div className="flex items-center justify-between mb-2">
-            <span className="text-gray-400 text-sm">Комфорт</span>
+            <span className="text-gray-400 text-sm">Comfort</span>
             <span className="text-white font-mono font-bold">{comfort}%</span>
           </div>
           <div className="h-2 bg-white/10 rounded-full overflow-hidden">
@@ -71,7 +71,7 @@ export function CompatibilityScore({ title, comfort, interest, gender }: Compati
         {/* Interest */}
         <div>
           <div className="flex items-center justify-between mb-2">
-            <span className="text-gray-400 text-sm">Интерес</span>
+            <span className="text-gray-400 text-sm">Interest</span>
             <span className="text-white font-mono font-bold">{interest}%</span>
           </div>
           <div className="h-2 bg-white/10 rounded-full overflow-hidden">

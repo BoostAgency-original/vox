@@ -26,9 +26,9 @@ export function MetricCard({
 }: MetricCardProps) {
   const formatRaw = (value: number) => {
     if (metric.unit === '%') return `${value.toFixed(1)}%`;
-    if (metric.unit === 'сл/мин') return `${Math.round(value)} сл/мин`;
-    if (metric.unit === 'сек') return `${value.toFixed(1)} сек`;
-    if (metric.unit === 'слов') return `${value.toFixed(1)} слов`;
+    if (metric.unit === 'wpm') return `${Math.round(value)} wpm`;
+    if (metric.unit === 'sec') return `${value.toFixed(1)} sec`;
+    if (metric.unit === 'words') return `${value.toFixed(1)} words`;
     return value.toFixed(2);
   };
 

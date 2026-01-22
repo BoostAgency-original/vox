@@ -11,31 +11,31 @@ interface PageProps {
   params: Promise<{ sessionId: string }>;
 }
 
-// Категории (без цветов)
+// Categories (no colors)
 function getComfortLabel(value: number): string {
-  if (value <= 39) return 'низкий';
-  if (value <= 59) return 'средний';
-  if (value <= 79) return 'повышенный';
-  return 'очень высокий';
+  if (value <= 39) return 'low';
+  if (value <= 59) return 'moderate';
+  if (value <= 79) return 'elevated';
+  return 'very high';
 }
 
 function getInterestLabel(value: number): string {
-  if (value <= 39) return 'низкий';
-  if (value <= 59) return 'умеренный';
-  if (value <= 79) return 'выше среднего';
-  return 'высокий';
+  if (value <= 39) return 'low';
+  if (value <= 59) return 'moderate';
+  if (value <= 79) return 'above average';
+  return 'high';
 }
 
-// Названия метрик
+// Metric names
 const METRIC_NAMES: Record<string, { name: string; unit: string; description: string }> = {
-  speechSpeed: { name: 'Темп речи', unit: 'сл/мин', description: 'Скорость речи' },
-  lexicalRichness: { name: 'Богатство словаря', unit: '', description: 'Разнообразие лексики' },
-  pauseDensity: { name: 'Плотность пауз', unit: '%', description: 'Время в паузах' },
-  pauseDepth: { name: 'Глубина пауз', unit: 'сек', description: 'Макс. длительность паузы' },
-  repetitionMax: { name: 'Склонность к повторам', unit: '', description: 'Повторы слов подряд' },
-  fillerRatio: { name: 'Чистота речи', unit: '%', description: 'Слова-паразиты' },
-  harshnessRatio: { name: 'Эмоциональная резкость', unit: '%', description: 'Грубая/резкая лексика' },
-  phraseLength: { name: 'Длина фразы', unit: 'слов', description: 'Слов между паузами' },
+  speechSpeed: { name: 'Speech Pace', unit: 'wpm', description: 'Speaking speed' },
+  lexicalRichness: { name: 'Vocabulary Richness', unit: '', description: 'Lexical diversity' },
+  pauseDensity: { name: 'Pause Density', unit: '%', description: 'Time spent in pauses' },
+  pauseDepth: { name: 'Pause Depth', unit: 'sec', description: 'Max pause duration' },
+  repetitionMax: { name: 'Repetition Tendency', unit: '', description: 'Consecutive word repeats' },
+  fillerRatio: { name: 'Speech Clarity', unit: '%', description: 'Filler words' },
+  harshnessRatio: { name: 'Emotional Intensity', unit: '%', description: 'Harsh/intense language' },
+  phraseLength: { name: 'Phrase Length', unit: 'words', description: 'Words between pauses' },
 };
 
 /**
@@ -108,8 +108,8 @@ export default function ResultsPage({ params }: PageProps) {
     return (
       <div className="min-h-screen flex items-center justify-center px-4">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-red-400 mb-4">Ошибка</h1>
-          <p className="text-gray-400">Не удалось получить результаты анализа</p>
+          <h1 className="text-2xl font-bold text-red-400 mb-4">Error</h1>
+          <p className="text-gray-400">Failed to retrieve analysis results</p>
         </div>
       </div>
     );
@@ -125,10 +125,10 @@ export default function ResultsPage({ params }: PageProps) {
         >
           <div className="w-24 h-24 mx-auto mb-8 rounded-full bg-gradient-to-r from-female-500 to-male-500 animate-pulse" />
           <h1 className="text-2xl font-bold text-white mb-4">
-            {status === 'loading' ? 'Загрузка...' : 'Анализируем ваши голоса'}
+            {status === 'loading' ? 'Loading...' : 'Analyzing your voices'}
           </h1>
           <p className="text-gray-400">
-            Это займёт 1-2 минуты. Страница обновится автоматически.
+            This will take 1-2 minutes. The page will update automatically.
           </p>
           <div className="mt-8 audio-wave text-gray-400 justify-center flex">
             <span></span><span></span><span></span><span></span><span></span>
@@ -156,7 +156,7 @@ export default function ResultsPage({ params }: PageProps) {
       {/* Names */}
       <div className="py-8 px-4 text-center border-b border-white/5">
         <h2 className="text-xl md:text-2xl font-bold text-white mb-2">
-          Совместимость по стилю речи
+          Communication Style Compatibility
         </h2>
         <div className="flex items-center justify-center gap-4">
           <span className="text-xl font-bold text-female-400">{results.female.name}</span>
@@ -173,16 +173,16 @@ export default function ResultsPage({ params }: PageProps) {
           animate={{ opacity: 1, y: 0 }}
           className="grid md:grid-cols-2 gap-6"
         >
-          {/* Тебе с ним */}
+          {/* Her with Him */}
           <div className="glass rounded-2xl p-6 bg-gradient-to-br from-female-900/30 to-transparent">
             <h3 className="text-lg font-semibold text-female-400 mb-6">
-              Тебе с ним
+              Her with Him
             </h3>
             <div className="space-y-6">
-              {/* Комфорт */}
+              {/* Comfort */}
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-gray-400 text-sm">Комфорт</span>
+                  <span className="text-gray-400 text-sm">Comfort</span>
                   <span className="text-white font-mono font-bold">{Math.round(Number(results.compatibility.comfortFm))}%</span>
                 </div>
                 <div className="h-2 bg-white/10 rounded-full overflow-hidden">
@@ -195,10 +195,10 @@ export default function ResultsPage({ params }: PageProps) {
                 </div>
                 <p className="text-gray-500 text-xs mt-1">{getComfortLabel(Number(results.compatibility.comfortFm))}</p>
               </div>
-              {/* Интерес */}
+              {/* Interest */}
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-gray-400 text-sm">Интерес</span>
+                  <span className="text-gray-400 text-sm">Interest</span>
                   <span className="text-white font-mono font-bold">{Math.round(Number(results.compatibility.interestFm))}%</span>
                 </div>
                 <div className="h-2 bg-white/10 rounded-full overflow-hidden">
@@ -214,16 +214,16 @@ export default function ResultsPage({ params }: PageProps) {
             </div>
           </div>
 
-          {/* Ему с тобой */}
+          {/* Him with Her */}
           <div className="glass rounded-2xl p-6 bg-gradient-to-br from-male-900/30 to-transparent">
             <h3 className="text-lg font-semibold text-male-400 mb-6">
-              Ему с тобой
+              Him with Her
             </h3>
             <div className="space-y-6">
-              {/* Комфорт */}
+              {/* Comfort */}
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-gray-400 text-sm">Комфорт</span>
+                  <span className="text-gray-400 text-sm">Comfort</span>
                   <span className="text-white font-mono font-bold">{Math.round(Number(results.compatibility.comfortMf))}%</span>
                 </div>
                 <div className="h-2 bg-white/10 rounded-full overflow-hidden">
@@ -236,10 +236,10 @@ export default function ResultsPage({ params }: PageProps) {
                 </div>
                 <p className="text-gray-500 text-xs mt-1">{getComfortLabel(Number(results.compatibility.comfortMf))}</p>
               </div>
-              {/* Интерес */}
+              {/* Interest */}
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-gray-400 text-sm">Интерес</span>
+                  <span className="text-gray-400 text-sm">Interest</span>
                   <span className="text-white font-mono font-bold">{Math.round(Number(results.compatibility.interestMf))}%</span>
                 </div>
                 <div className="h-2 bg-white/10 rounded-full overflow-hidden">
@@ -256,22 +256,22 @@ export default function ResultsPage({ params }: PageProps) {
           </div>
         </motion.div>
 
-        {/* Краткий вердикт */}
+        {/* Brief Verdict */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
           className="glass rounded-2xl p-6"
         >
-          <h3 className="text-lg font-semibold text-white mb-4">Краткий вердикт</h3>
+          <h3 className="text-lg font-semibold text-white mb-4">Brief Verdict</h3>
           <p className="text-gray-300 leading-relaxed">
             {results.interpretation.summary}
           </p>
         </motion.div>
 
-        {/* === 2. ЛИЧНЫЕ КОММЕНТАРИИ === */}
+        {/* === 2. PERSONAL COMMENTS === */}
         <div className="grid md:grid-cols-2 gap-6">
-          {/* Тебе с ним */}
+          {/* Her with Him */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -279,14 +279,14 @@ export default function ResultsPage({ params }: PageProps) {
             className="glass rounded-2xl p-6 border-l-4 border-female-500"
           >
             <h3 className="text-lg font-semibold text-female-400 mb-4">
-              Тебе с ним
+              Her with Him
             </h3>
             <p className="text-gray-300 text-sm leading-relaxed whitespace-pre-line">
               {results.interpretation.herWithHim}
             </p>
           </motion.div>
 
-          {/* Ему с тобой */}
+          {/* Him with Her */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -294,7 +294,7 @@ export default function ResultsPage({ params }: PageProps) {
             className="glass rounded-2xl p-6 border-l-4 border-male-500"
           >
             <h3 className="text-lg font-semibold text-male-400 mb-4">
-              Ему с тобой
+              Him with Her
             </h3>
             <p className="text-gray-300 text-sm leading-relaxed whitespace-pre-line">
               {results.interpretation.himWithHer}
@@ -302,7 +302,7 @@ export default function ResultsPage({ params }: PageProps) {
           </motion.div>
         </div>
 
-        {/* === 3. ОКТАГРАММА === */}
+        {/* === 3. OCTAGRAM === */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -310,7 +310,7 @@ export default function ResultsPage({ params }: PageProps) {
           className="glass rounded-2xl p-6"
         >
           <h3 className="text-lg font-semibold text-white mb-6 text-center">
-            Сравнение по параметрам
+            Parameter Comparison
           </h3>
           <RadarChart
             femaleScores={results.female.normalizedScores}
@@ -320,7 +320,7 @@ export default function ResultsPage({ params }: PageProps) {
           />
         </motion.div>
 
-        {/* === 4. ТАБЛИЦА ПАРАМЕТРОВ === */}
+        {/* === 4. PARAMETERS TABLE === */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -328,7 +328,7 @@ export default function ResultsPage({ params }: PageProps) {
           className="space-y-4"
         >
           <h3 className="text-lg font-semibold text-white mb-4">
-            Ваш стиль общения по параметрам
+            Your Communication Style by Parameters
           </h3>
 
           {results.interpretation.parametersComparison?.map((param, idx) => {
@@ -341,14 +341,14 @@ export default function ResultsPage({ params }: PageProps) {
             const maleBarPercent = getBarPercent(param.parameter, femaleRaw, maleRaw, false);
 
             const formatValue = (val: number, metricId: string) => {
-              // Богатство словаря: 0-1 → показываем как 0-100
+              // Vocabulary richness: 0-1 → show as 0-100
               if (metricId === 'lexicalRichness') return Math.round((val || 0) * 100);
-              // Проценты: без знака %, округляем до целых
+              // Percentages: no % sign, round to integers
               if (meta.unit === '%') return Math.round(val || 0);
-              if (meta.unit === 'сек') return `${(val || 0).toFixed(1)} сек`;
-              if (meta.unit === 'сл/мин') return `${Math.round(val || 0)} сл/мин`;
-              if (meta.unit === 'слов') return `${(val || 0).toFixed(1)} слов`;
-              // Повторы — целое число
+              if (meta.unit === 'sec') return `${(val || 0).toFixed(1)} sec`;
+              if (meta.unit === 'wpm') return `${Math.round(val || 0)} wpm`;
+              if (meta.unit === 'words') return `${(val || 0).toFixed(1)} words`;
+              // Repetitions — integer
               if (metricId === 'repetitionMax') return Math.round(val || 0);
               return Math.round(val || 0);
             };
@@ -369,10 +369,10 @@ export default function ResultsPage({ params }: PageProps) {
                 </div>
 
                 <div className="space-y-3 mb-4">
-                  {/* Ты */}
+                  {/* Her */}
                   <div>
                     <div className="flex items-center justify-between text-sm mb-1">
-                      <span className="text-female-400">Ты</span>
+                      <span className="text-female-400">Her</span>
                       <span className="text-gray-400 font-mono">{formatValue(femaleRaw, param.parameter)}</span>
                     </div>
                     <div className="h-2 bg-white/5 rounded-full overflow-hidden">
@@ -385,10 +385,10 @@ export default function ResultsPage({ params }: PageProps) {
                     </div>
                   </div>
 
-                  {/* Он */}
+                  {/* Him */}
                   <div>
                     <div className="flex items-center justify-between text-sm mb-1">
-                      <span className="text-male-400">Он</span>
+                      <span className="text-male-400">Him</span>
                       <span className="text-gray-400 font-mono">{formatValue(maleRaw, param.parameter)}</span>
                     </div>
                     <div className="h-2 bg-white/5 rounded-full overflow-hidden">
@@ -402,7 +402,7 @@ export default function ResultsPage({ params }: PageProps) {
                   </div>
                 </div>
 
-                {/* Комментарий */}
+                {/* Comment */}
                 {param.comment && (
                   <div className="border-t border-white/5 pt-4">
                     <p className="text-gray-400 text-sm leading-relaxed">

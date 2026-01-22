@@ -4,9 +4,9 @@ import { GeistMono } from 'geist/font/mono';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Vox — Анализ голосовой совместимости',
-  description: 'Узнайте, насколько вы совместимы по стилю общения. Загрузите голосовые записи и получите подробный анализ.',
-  keywords: ['совместимость', 'голос', 'анализ речи', 'отношения'],
+  title: 'Vox — Voice Compatibility Analysis',
+  description: 'Discover how compatible you are based on communication styles. Upload voice recordings and get a detailed analysis.',
+  keywords: ['compatibility', 'voice', 'speech analysis', 'relationships'],
 };
 
 export const viewport: Viewport = {
@@ -22,7 +22,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ru" className={`${GeistSans.variable} ${GeistMono.variable}`}>
+    <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
       <body className="min-h-screen bg-[#0a0a0f] antialiased">
         {children}
       </body>

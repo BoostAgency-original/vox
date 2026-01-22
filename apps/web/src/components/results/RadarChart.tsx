@@ -19,14 +19,14 @@ interface RadarChartProps {
 }
 
 const LABELS: Record<string, string> = {
-  speechSpeed: 'Темп',
-  lexicalRichness: 'Лексика',
-  pauseDensity: 'Паузы',
-  pauseDepth: 'Глубина пауз',
-  repetitionMax: 'Повторы',
-  fillerRatio: 'Слова-паразиты',
-  harshnessRatio: 'Резкость',
-  phraseLength: 'Длина фраз',
+  speechSpeed: 'Pace',
+  lexicalRichness: 'Vocabulary',
+  pauseDensity: 'Pauses',
+  pauseDepth: 'Pause Depth',
+  repetitionMax: 'Repetitions',
+  fillerRatio: 'Filler Words',
+  harshnessRatio: 'Intensity',
+  phraseLength: 'Phrase Length',
 };
 
 export function RadarChart({ femaleScores, maleScores, femaleName, maleName }: RadarChartProps) {

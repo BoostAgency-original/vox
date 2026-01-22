@@ -18,18 +18,20 @@ export class GptService {
       messages: [
         {
           role: 'system',
-          content: `Ты эксперт по анализу речи. Проанализируй транскрипт речи на русском языке и верни JSON с результатами.
+          content: `You are a speech analysis expert. Analyze the speech transcript and return JSON with results.
 
-Определи:
-1. lexicalDiversity - коэффициент лексического разнообразия (TTR: уникальные слова / всего слов), число от 0 до 1
-2. fillerWordsCount - количество слов-паразитов (э, ну, типа, как бы, короче, значит, вот, это самое, так сказать, в общем, понимаешь, слушай, знаешь, блин)
-3. fillerWordsList - список найденных слов-паразитов
-4. profanityCount - количество нецензурных/матерных слов
-5. expressiveCount - количество эмоционально резких выражений (ненавижу, обожаю, жесть, кошмар, ужас и т.п.)
-6. uniqueWords - количество уникальных слов (в начальной форме)
-7. totalWords - общее количество слов
+IMPORTANT: All responses must be in English only.
 
-Верни ТОЛЬКО валидный JSON без markdown.`,
+Determine:
+1. lexicalDiversity - lexical diversity coefficient (TTR: unique words / total words), number from 0 to 1
+2. fillerWordsCount - count of filler words (um, uh, like, you know, basically, actually, literally, I mean, sort of, kind of, right, well)
+3. fillerWordsList - list of found filler words
+4. profanityCount - count of profane/swear words
+5. expressiveCount - count of emotionally intense expressions (hate, love, awesome, terrible, amazing, etc.)
+6. uniqueWords - count of unique words (in base form)
+7. totalWords - total word count
+
+Return ONLY valid JSON without markdown.`,
         },
         {
           role: 'user',
@@ -159,7 +161,9 @@ export class GptService {
 - НЕ ВСТАВЛЯЙ ЧИСЛА! Числа показаны в UI отдельно
 - Пиши конкретно про ЭТУ пару, не общие фразы
 - Используй имена участников
-- Стиль: тёплый, конкретный, практичный`,
+- Style: warm, specific, practical
+
+CRITICAL: All text output (summary, herWithHim, himWithHer, comments) MUST be in English only.`,
         },
         {
           role: 'user',
@@ -186,7 +190,7 @@ export class GptService {
       return JSON.parse(content);
     } catch {
       return {
-        summary: 'Не удалось сгенерировать интерпретацию.',
+        summary: 'Failed to generate interpretation.',
         herWithHim: '',
         himWithHer: '',
         parametersComparison: [],
