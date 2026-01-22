@@ -35,8 +35,8 @@ services:
       - EMAIL_FROM=${EMAIL_FROM}
     volumes:
       - uploads_data:/app/uploads
-    expose:
-      - "3001"
+    ports:
+      - "3001:3001"
     depends_on:
       postgres:
         condition: service_healthy
@@ -78,7 +78,7 @@ services:
       context: ..
       dockerfile: docker/Dockerfile.admin
       args:
-        - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+        - NEXT_PUBLIC_API_URL=http://155.138.174.127:3001
     container_name: vox-admin
     environment:
       - NODE_ENV=production
