@@ -115,7 +115,7 @@ export function RadarChart({ femaleScores, maleScores, femaleName, maleName }: R
             strokeWidth={2}
           />
           <Legend
-            wrapperStyle={{ paddingTop: isMobile ? '15px' : '20px' }}
+            wrapperStyle={{ paddingTop: isMobile ? '45px' : '20px' }}
             formatter={(value) => <span className="text-gray-300 text-sm">{value}</span>}
           />
         </RechartsRadarChart>
