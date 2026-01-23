@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { api } from '@/lib/api';
@@ -11,11 +11,14 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const router = useRouter();
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
     // Check auth on mount
     if (!api.isAuthenticated()) {
       router.replace('/');
+    } else {
+      setIsReady(true);
     }
   }, [router]);
 
@@ -24,8 +27,8 @@ export default function DashboardLayout({
     router.replace('/');
   };
 
-  // Don't render if not authenticated
-  if (typeof window !== 'undefined' && !api.isAuthenticated()) {
+  // Show nothing until we verify auth status
+  if (!isReady) {
     return null;
   }
 

@@ -67,7 +67,7 @@ export function RadarChart({ femaleScores, maleScores, femaleName, maleName }: R
 
   // Margins for labels
   const margin = isMobile
-    ? { top: 19, right: 29, bottom: 30, left: 29 }
+    ? { top: 25, right: 29, bottom: 20, left: 29 }
     : { top: 5, right: 5, bottom: 5, left: 5 };
 
   // Font size scales with width on mobile
@@ -115,7 +115,7 @@ export function RadarChart({ femaleScores, maleScores, femaleName, maleName }: R
             strokeWidth={2}
           />
           <Legend
-            wrapperStyle={{ paddingTop: isMobile ? '5px' : '20px' }}
+            wrapperStyle={{ paddingTop: isMobile ? '15px' : '20px' }}
             formatter={(value) => <span className="text-gray-300 text-sm">{value}</span>}
           />
         </RechartsRadarChart>
