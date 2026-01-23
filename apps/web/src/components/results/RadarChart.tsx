@@ -8,7 +8,6 @@ import {
   PolarAngleAxis,
   PolarRadiusAxis,
   ResponsiveContainer,
-  Legend,
 } from 'recharts';
 import type { NormalizedScores } from '@vox/shared';
 
@@ -60,10 +59,9 @@ export function RadarChart({ femaleScores, maleScores, femaleName, maleName }: R
   const { isMobile, width } = dimensions;
   
   // Calculate outer radius - scales with container, but capped
-  // On mobile: leave more room for labels
   const outerRadius = isMobile 
-    ? Math.min(width * 0.32, 120) // Mobile: smaller, max 120px
-    : "75%"; // Desktop: percentage-based
+    ? Math.min(width * 0.32, 120)
+    : "75%";
 
   // Margins for labels
   const margin = isMobile
@@ -73,53 +71,63 @@ export function RadarChart({ femaleScores, maleScores, femaleName, maleName }: R
   // Font size scales with width on mobile
   const fontSize = isMobile ? Math.max(9, Math.min(11, width / 40)) : 12;
 
+  // Chart height (without legend)
+  const chartHeight = isMobile ? Math.max(280, Math.min(340, width * 0.85)) : 400;
+
   return (
-    <div 
-      ref={containerRef}
-      className="w-full"
-      style={{ height: isMobile ? Math.max(280, Math.min(340, width * 0.85)) : 400 }}
-    >
-      <ResponsiveContainer width="100%" height="100%">
-        <RechartsRadarChart 
-          data={data}
-          cx="50%"
-          cy="50%"
-          outerRadius={outerRadius}
-          margin={margin}
-        >
-          <PolarGrid stroke="rgba(255,255,255,0.1)" />
-          <PolarAngleAxis
-            dataKey="metric"
-            tick={{ fill: '#9ca3af', fontSize }}
-          />
-          <PolarRadiusAxis
-            angle={90}
-            domain={[0, 100]}
-            tick={{ fill: '#6b7280', fontSize: 10 }}
-            tickCount={5}
-          />
-          <Radar
-            name={femaleName}
-            dataKey="female"
-            stroke="#ec4899"
-            fill="#ec4899"
-            fillOpacity={0.3}
-            strokeWidth={2}
-          />
-          <Radar
-            name={maleName}
-            dataKey="male"
-            stroke="#3b82f6"
-            fill="#3b82f6"
-            fillOpacity={0.3}
-            strokeWidth={2}
-          />
-          <Legend
-            wrapperStyle={{ paddingTop: isMobile ? '45px' : '20px' }}
-            formatter={(value) => <span className="text-gray-300 text-sm">{value}</span>}
-          />
-        </RechartsRadarChart>
-      </ResponsiveContainer>
+    <div ref={containerRef} className="w-full">
+      {/* Chart */}
+      <div style={{ height: chartHeight }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <RechartsRadarChart 
+            data={data}
+            cx="50%"
+            cy={isMobile ? "48%" : "50%"}
+            outerRadius={outerRadius}
+            margin={margin}
+          >
+            <PolarGrid stroke="rgba(255,255,255,0.1)" />
+            <PolarAngleAxis
+              dataKey="metric"
+              tick={{ fill: '#9ca3af', fontSize }}
+            />
+            <PolarRadiusAxis
+              angle={90}
+              domain={[0, 100]}
+              tick={{ fill: '#6b7280', fontSize: 10 }}
+              tickCount={5}
+            />
+            <Radar
+              name={femaleName}
+              dataKey="female"
+              stroke="#ec4899"
+              fill="#ec4899"
+              fillOpacity={0.3}
+              strokeWidth={2}
+            />
+            <Radar
+              name={maleName}
+              dataKey="male"
+              stroke="#3b82f6"
+              fill="#3b82f6"
+              fillOpacity={0.3}
+              strokeWidth={2}
+            />
+          </RechartsRadarChart>
+        </ResponsiveContainer>
+      </div>
+
+      {/* Legend - outside the chart container */}
+      <div className={`flex items-center justify-center gap-6 ${isMobile ? 'mt-4' : 'mt-5'}`}>
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 rounded-sm bg-[#ec4899]" />
+          <span className="text-gray-300 text-sm">{femaleName}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 rounded-sm bg-[#3b82f6]" />
+          <span className="text-gray-300 text-sm">{maleName}</span>
+        </div>
+      </div>
     </div>
   );
 }
