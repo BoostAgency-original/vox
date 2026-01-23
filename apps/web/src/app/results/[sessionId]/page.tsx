@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, use } from 'react';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { api } from '@/lib/api';
 import { RadarChart } from '@/components/results/RadarChart';
@@ -145,11 +146,11 @@ export default function ResultsPage({ params }: PageProps) {
       {/* Header */}
       <header className="py-6 px-4 border-b border-white/5">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <h1 className="text-2xl font-bold">
+          <Link href="/" className="text-2xl font-bold hover:opacity-80 transition-opacity">
             <span className="text-gradient-female">V</span>
             <span className="text-white">o</span>
             <span className="text-gradient-male">x</span>
-          </h1>
+          </Link>
         </div>
       </header>
 
@@ -307,9 +308,9 @@ export default function ResultsPage({ params }: PageProps) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="glass rounded-2xl p-6"
+          className="glass rounded-2xl p-3 sm:p-6"
         >
-          <h3 className="text-lg font-semibold text-white mb-6 text-center">
+          <h3 className="text-lg font-semibold text-white mb-2 sm:mb-4 text-center">
             Parameter Comparison
           </h3>
           <RadarChart
