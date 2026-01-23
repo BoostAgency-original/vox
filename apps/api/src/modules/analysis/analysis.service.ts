@@ -90,8 +90,13 @@ export class AnalysisService {
         ...compatibility,
       });
 
-      // Send email with results
-      await this.emailService.sendResults(session.email, sessionId);
+      // Send email with results (non-blocking)
+      try {
+        await this.emailService.sendResults(session.email, sessionId);
+      } catch (emailError) {
+        console.error('[Analysis] Email failed but analysis complete:', emailError.message);
+        // Don't fail the session - analysis is done, email is optional
+      }
 
     } catch (error) {
       console.error('Analysis failed:', error);

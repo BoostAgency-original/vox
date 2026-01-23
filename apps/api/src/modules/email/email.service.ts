@@ -16,13 +16,15 @@ export class EmailService {
 
     if (user && pass) {
       this.transporter = nodemailer.createTransport({
-        service: 'gmail',
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false, // TLS
         auth: {
           user,
           pass,
         },
       });
-      console.log('[Email] Gmail SMTP configured');
+      console.log('[Email] Gmail SMTP configured (port 587)');
     } else {
       console.log('[Email] No credentials, running in dev mode');
     }
