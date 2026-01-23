@@ -40,7 +40,12 @@ export class WhisperService {
 
     // Use native FormData and Blob for reliable multipart upload
     const formData = new FormData();
-    const blob = new Blob([audioBuffer], { type: mimeType });
+    // Copy buffer to fresh ArrayBuffer to avoid TypeScript SharedArrayBuffer issues
+    const arrayBuffer = audioBuffer.buffer.slice(
+      audioBuffer.byteOffset,
+      audioBuffer.byteOffset + audioBuffer.byteLength
+    ) as ArrayBuffer;
+    const blob = new Blob([arrayBuffer], { type: mimeType });
     formData.append('file', blob, filename);
     formData.append('model', 'whisper-1');
     formData.append('response_format', 'verbose_json');
