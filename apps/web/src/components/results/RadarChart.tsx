@@ -37,13 +37,19 @@ export function RadarChart({ femaleScores, maleScores, femaleName, maleName }: R
   }));
 
   return (
-    <div className="w-full h-[400px]">
+    <div className="w-full h-[350px] sm:h-[400px]">
       <ResponsiveContainer width="100%" height="100%">
-        <RechartsRadarChart data={data}>
+        <RechartsRadarChart 
+          data={data}
+          cx="50%"
+          cy="50%"
+          outerRadius="60%"
+          margin={{ top: 20, right: 30, bottom: 20, left: 30 }}
+        >
           <PolarGrid stroke="rgba(255,255,255,0.1)" />
           <PolarAngleAxis
             dataKey="metric"
-            tick={{ fill: '#9ca3af', fontSize: 12 }}
+            tick={{ fill: '#9ca3af', fontSize: 10 }}
           />
           <PolarRadiusAxis
             angle={90}
@@ -68,8 +74,8 @@ export function RadarChart({ femaleScores, maleScores, femaleName, maleName }: R
             strokeWidth={2}
           />
           <Legend
-            wrapperStyle={{ paddingTop: '20px' }}
-            formatter={(value) => <span className="text-gray-300">{value}</span>}
+            wrapperStyle={{ paddingTop: '10px' }}
+            formatter={(value) => <span className="text-gray-300 text-sm">{value}</span>}
           />
         </RechartsRadarChart>
       </ResponsiveContainer>
