@@ -67,7 +67,7 @@ export function RadarChart({ femaleScores, maleScores, femaleName, maleName }: R
 
   // Margins for labels
   const margin = isMobile
-    ? { top: 15, right: 25, bottom: 10, left: 25 }
+    ? { top: 19, right: 29, bottom: 30, left: 29 }
     : { top: 5, right: 5, bottom: 5, left: 5 };
 
   // Font size scales with width on mobile
