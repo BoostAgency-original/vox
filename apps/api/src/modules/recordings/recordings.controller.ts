@@ -38,7 +38,8 @@ export class RecordingsController {
           'audio/x-flac',
           'video/webm', // Browser may send webm as video
         ];
-        console.log(`[Upload] File: ${file.originalname}, MIME: ${file.mimetype}, Size: ${(file.size / 1024 / 1024).toFixed(2)}MB`);
+        const sizeMB = file.size ? (file.size / 1024 / 1024).toFixed(2) : 'unknown';
+        console.log(`[Upload] File: ${file.originalname}, MIME: ${file.mimetype}, Size: ${sizeMB}MB`);
         if (allowedMimes.includes(file.mimetype)) {
           cb(null, true);
         } else {
