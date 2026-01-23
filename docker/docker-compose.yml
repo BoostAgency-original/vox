@@ -43,6 +43,7 @@ services:
     restart: unless-stopped
     networks:
       - vox-network
+      - dokploy-network
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.vox-api.rule=Host(`voxomatic.com`) && PathPrefix(`/api`)"
@@ -66,6 +67,7 @@ services:
     restart: unless-stopped
     networks:
       - vox-network
+      - dokploy-network
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.vox-web.rule=Host(`voxomatic.com`)"
@@ -97,3 +99,5 @@ volumes:
 networks:
   vox-network:
     driver: bridge
+  dokploy-network:
+    external: true
