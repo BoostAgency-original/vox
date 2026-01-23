@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import {
   Radar,
   RadarChart as RechartsRadarChart,
@@ -30,6 +31,15 @@ const LABELS: Record<string, string> = {
 };
 
 export function RadarChart({ femaleScores, maleScores, femaleName, maleName }: RadarChartProps) {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 640);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   const data = Object.keys(LABELS).map((key) => ({
     metric: LABELS[key],
     female: femaleScores[key as keyof NormalizedScores],
@@ -43,13 +53,16 @@ export function RadarChart({ femaleScores, maleScores, femaleName, maleName }: R
           data={data}
           cx="50%"
           cy="50%"
-          outerRadius="60%"
-          margin={{ top: 20, right: 30, bottom: 20, left: 30 }}
+          outerRadius={isMobile ? "55%" : "75%"}
+          margin={isMobile 
+            ? { top: 20, right: 30, bottom: 20, left: 30 }
+            : { top: 5, right: 5, bottom: 5, left: 5 }
+          }
         >
           <PolarGrid stroke="rgba(255,255,255,0.1)" />
           <PolarAngleAxis
             dataKey="metric"
-            tick={{ fill: '#9ca3af', fontSize: 10 }}
+            tick={{ fill: '#9ca3af', fontSize: isMobile ? 10 : 12 }}
           />
           <PolarRadiusAxis
             angle={90}
@@ -74,8 +87,8 @@ export function RadarChart({ femaleScores, maleScores, femaleName, maleName }: R
             strokeWidth={2}
           />
           <Legend
-            wrapperStyle={{ paddingTop: '10px' }}
-            formatter={(value) => <span className="text-gray-300 text-sm">{value}</span>}
+            wrapperStyle={{ paddingTop: '20px' }}
+            formatter={(value) => <span className="text-gray-300">{value}</span>}
           />
         </RechartsRadarChart>
       </ResponsiveContainer>
