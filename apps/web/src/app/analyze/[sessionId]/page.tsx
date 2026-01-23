@@ -139,19 +139,6 @@ export default function AnalyzePage({ params }: PageProps) {
           >
             You can close this page now. We'll email you when results are ready.
           </motion.p>
-
-          {/* Processing animation */}
-          <motion.div
-            className="mt-8 flex items-center justify-center gap-2"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.7 }}
-          >
-            <div className="audio-wave text-gray-500">
-              <span></span><span></span><span></span><span></span><span></span>
-            </div>
-            <span className="text-gray-500 text-sm">Processing...</span>
-          </motion.div>
         </motion.div>
       </main>
     );
