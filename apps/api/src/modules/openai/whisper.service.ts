@@ -1,10 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { OpenaiService } from './openai.service';
 import type { WordTimestamp } from '@vox/shared';
-import * as fs from 'fs';
-import * as path from 'path';
-import * as os from 'os';
-import { v4 as uuid } from 'uuid';
+import { toFile } from 'openai';
 
 export interface TranscriptionResult {
   text: string;
@@ -22,22 +19,29 @@ export class WhisperService {
     const sizeMB = (audioBuffer.length / 1024 / 1024).toFixed(2);
     console.log(`[Whisper] Transcribing: ${filename}, size: ${sizeMB}MB`);
 
-    // Write buffer to temp file and use fs.createReadStream
-    // This is more reliable for OpenAI SDK
-    const tempDir = os.tmpdir();
-    const tempFile = path.join(tempDir, `whisper-${uuid()}-${filename}`);
-    
-    try {
-      fs.writeFileSync(tempFile, audioBuffer);
-      console.log(`[Whisper] Temp file created: ${tempFile}`);
+    // Determine MIME type from extension
+    const ext = filename.split('.').pop()?.toLowerCase() || 'webm';
+    const mimeTypes: Record<string, string> = {
+      'webm': 'audio/webm',
+      'mp3': 'audio/mpeg',
+      'wav': 'audio/wav',
+      'ogg': 'audio/ogg',
+      'm4a': 'audio/mp4',
+      'mp4': 'audio/mp4',
+    };
+    const mimeType = mimeTypes[ext] || 'audio/webm';
 
-      const response = await client.audio.transcriptions.create({
-        file: fs.createReadStream(tempFile),
-        model: 'whisper-1',
-        response_format: 'verbose_json',
-        timestamp_granularities: ['word'],
-        language: 'ru',
-      });
+    // Use OpenAI's toFile utility for reliable multipart upload
+    const file = await toFile(audioBuffer, filename, { type: mimeType });
+    console.log(`[Whisper] Created file object: ${filename}, type: ${mimeType}`);
+
+    const response = await client.audio.transcriptions.create({
+      file,
+      model: 'whisper-1',
+      response_format: 'verbose_json',
+      timestamp_granularities: ['word'],
+      language: 'ru',
+    });
 
       // Extract words with timestamps
       const words: WordTimestamp[] = (response as any).words?.map((w: any) => ({
@@ -58,12 +62,5 @@ export class WhisperService {
         words,
         duration,
       };
-    } finally {
-      // Clean up temp file
-      if (fs.existsSync(tempFile)) {
-        fs.unlinkSync(tempFile);
-        console.log(`[Whisper] Temp file deleted: ${tempFile}`);
-      }
-    }
   }
 }
