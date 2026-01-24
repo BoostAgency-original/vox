@@ -43,13 +43,6 @@ services:
     restart: unless-stopped
     networks:
       - vox-network
-      - dokploy-network
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.vox-api.rule=Host(`voxomatic.com`) && PathPrefix(`/api`)"
-      - "traefik.http.routers.vox-api.entrypoints=websecure"
-      - "traefik.http.routers.vox-api.tls.certresolver=letsencrypt"
-      - "traefik.http.services.vox-api.loadbalancer.server.port=3001"
 
   web:
     build:
@@ -60,27 +53,20 @@ services:
     container_name: vox-web
     environment:
       - NODE_ENV=production
-    expose:
-      - "3000"
+    ports:
+      - "80:3000"
     depends_on:
       - api
     restart: unless-stopped
     networks:
       - vox-network
-      - dokploy-network
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.vox-web.rule=Host(`voxomatic.com`)"
-      - "traefik.http.routers.vox-web.entrypoints=websecure"
-      - "traefik.http.routers.vox-web.tls.certresolver=letsencrypt"
-      - "traefik.http.services.vox-web.loadbalancer.server.port=3000"
 
   admin:
     build:
       context: ..
       dockerfile: docker/Dockerfile.admin
       args:
-        - NEXT_PUBLIC_API_URL=http://155.138.174.127:3001
+        - NEXT_PUBLIC_API_URL=${ADMIN_API_URL:-http://localhost:3001}
     container_name: vox-admin
     environment:
       - NODE_ENV=production
@@ -99,5 +85,3 @@ volumes:
 networks:
   vox-network:
     driver: bridge
-  dokploy-network:
-    external: true
