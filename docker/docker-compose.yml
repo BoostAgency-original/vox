@@ -29,6 +29,7 @@ services:
       - ADMIN_PASSWORD=${ADMIN_PASSWORD}
       - JWT_SECRET=${JWT_SECRET}
       - FRONTEND_URL=https://voxomatic.com
+      - ADMIN_URL=http://155.138.196.189:3002
       - EMAIL_USER=${EMAIL_USER}
       - EMAIL_PASSWORD=${EMAIL_PASSWORD}
       - EMAIL_FROM=${EMAIL_FROM}
