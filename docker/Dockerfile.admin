@@ -12,11 +12,12 @@ RUN bun install
 COPY apps/admin ./apps/admin
 
 ARG NEXT_PUBLIC_API_URL
+ARG CACHE_BUST
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 ENV NODE_ENV=production
 
 WORKDIR /app/apps/admin
-RUN npm run build
+RUN echo "Cache bust: $CACHE_BUST" && npm run build
 
 EXPOSE 3002
 ENV PORT=3002

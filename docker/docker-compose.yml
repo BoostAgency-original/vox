@@ -28,8 +28,7 @@ services:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - ADMIN_PASSWORD=${ADMIN_PASSWORD}
       - JWT_SECRET=${JWT_SECRET}
-      - FRONTEND_URL=${FRONTEND_URL}
-      - ADMIN_URL=${ADMIN_URL}
+      - FRONTEND_URL=https://voxomatic.com
       - EMAIL_USER=${EMAIL_USER}
       - EMAIL_PASSWORD=${EMAIL_PASSWORD}
       - EMAIL_FROM=${EMAIL_FROM}
@@ -37,24 +36,35 @@ services:
       - uploads_data:/app/uploads
     ports:
       - "3001:3001"
+    expose:
+      - "3001"
     depends_on:
       postgres:
         condition: service_healthy
     restart: unless-stopped
     networks:
       - vox-network
+      - dokploy-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.vox-api.rule=Host(`voxomatic.com`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.vox-api.entrypoints=websecure"
+      - "traefik.http.routers.vox-api.tls.certresolver=letsencrypt"
+      - "traefik.http.services.vox-api.loadbalancer.server.port=3001"
+      - "traefik.docker.network=dokploy-network"
 
   web:
     build:
       context: ..
       dockerfile: docker/Dockerfile.web
       args:
-        - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+        - NEXT_PUBLIC_API_URL=https://voxomatic.com
+        - CACHE_BUST=20260124v2
     container_name: vox-web
     environment:
       - NODE_ENV=production
-    ports:
-      - "3003:3000"
+    expose:
+      - "3000"
     depends_on:
       - api
     restart: unless-stopped
@@ -63,10 +73,11 @@ services:
       - dokploy-network
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.vox-web.rule=Host(`voxomatic.com`)"
+      - "traefik.http.routers.vox-web.rule=Host(`voxomatic.com`) && !PathPrefix(`/api`)"
       - "traefik.http.routers.vox-web.entrypoints=websecure"
       - "traefik.http.routers.vox-web.tls.certresolver=letsencrypt"
       - "traefik.http.services.vox-web.loadbalancer.server.port=3000"
+      - "traefik.docker.network=dokploy-network"
 
   admin:
     build:
@@ -74,6 +85,7 @@ services:
       dockerfile: docker/Dockerfile.admin
       args:
         - NEXT_PUBLIC_API_URL=http://155.138.196.189:3001
+        - CACHE_BUST=20260124v2
     container_name: vox-admin
     environment:
       - NODE_ENV=production
