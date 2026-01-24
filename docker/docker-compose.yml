@@ -80,7 +80,7 @@ services:
       context: ..
       dockerfile: docker/Dockerfile.admin
       args:
-        - NEXT_PUBLIC_API_URL=http://155.138.174.127:3001
+        - NEXT_PUBLIC_API_URL=http://155.138.196.189:3001
     container_name: vox-admin
     environment:
       - NODE_ENV=production
